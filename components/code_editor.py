@@ -1,7 +1,6 @@
 from dash import dash_table, html, dcc
 from dash.dependencies import Input, Output, State
 import dash
-import pandas as pd
 
 def code_editor():
     return html.Div(style={'width': '50%', 'padding': '20px'}, children=[
@@ -26,8 +25,9 @@ def update_matrix_input(size):
     if size and size > 0:
         try:
             size = int(size)
-            columns = [{'name': f'Column {i+1}', 'id': f'col-{i}'} for i in range(size)]
-            data = [{'col-' + str(i): '0' for i in range(size)} for _ in range(size)]
+            columns = [{'name': 'Row/Col', 'id': 'row-col'}] + [{'name': f'Column {i}', 'id': f'col-{i}'} for i in range(size)]
+
+            data = [{'row-col': f'Row {i}'} | {f'col-{j}': '0' for j in range(size)} for i in range(size)]
             return dash_table.DataTable(
                 id='matrix-tables',
                 columns=columns,
@@ -39,5 +39,3 @@ def update_matrix_input(size):
         except ValueError:
             return html.Div('Invalid input. Please enter a positive integer.')
     return html.Div()
-    
-
