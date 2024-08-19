@@ -1,7 +1,5 @@
 import dash_bootstrap_components as dbc
-import dash_html_components as html
-import dash_core_components as dcc
-from dash import Input, Output, callback, ctx
+from dash import html, dcc, Input, Output, callback
 from components.graph_visualizer import create_graph
 from components.code_editor import code_editor
 
@@ -31,16 +29,42 @@ layout = html.Div([
             'border-radius': '10px',
             'box-shadow': '0px 4px 8px rgba(0, 0, 0, 0.1)'
         }, children=[
-            # Option Buttons
-            dbc.ButtonGroup([
-                dbc.Button("Create and Visualize Graph", id='create_matrix_btn', color="primary", className="me-2", n_clicks=0),
-                
-                dbc.Button("BFS Traversal", id='bfs_btn', color="secondary", className="me-2", n_clicks=0),
-                dbc.Button("DFS Traversal", id='dfs_btn', color="secondary", n_clicks=0),
-            ], style={'margin-bottom': '20px'}),
+            # Option Button
+            dbc.Button("Create and Visualize Graph", id='create_matrix_btn', color="primary", className="me-2", n_clicks=0, style={
+                'padding': '10px 20px',
+                'border-radius': '8px',
+                'transition': 'background-color 0.3s'
+            }),
+
+            # Dynamic content area for DataTable and traversal options
+            html.Div(id='dynamic-content', style={'flex': 1}),
             
-            # Dynamic content area
-            html.Div(id='dynamic-content', style={'flex': 1})
+            # Traversal Dropdown and Start Button
+            html.Div([
+                dcc.RadioItems(
+                    id='traversal-method',
+                    options=[
+                        {'label': 'BFS', 'value': 'BFS'},
+                        {'label': 'DFS', 'value': 'DFS'}
+                    ],
+                    value='None',  # Default value
+                    labelStyle={'display': 'inline-block'}
+                ),
+                dbc.Button("Start Traversal", id='start-traversal-btn', color="secondary", className="me-2", n_clicks=0, style={
+                    'padding': '10px 20px',
+                    'border-radius': '8px',
+                    'transition': 'background-color 0.3s'
+                })
+            ], style={'padding': '10px'}),
+            
+            # Interval component for animation
+            dcc.Interval(
+                id='interval-component',
+                interval=1*1000,  # Interval in milliseconds
+                n_intervals=0,
+                max_intervals=-1,
+                disabled=True
+            )
         ]),
         
         # Right side for graph visualization
@@ -53,29 +77,6 @@ layout = html.Div([
         }, children=[
             html.H2('DSA Graph Visualizer', style={'textAlign': 'center', 'color': '#007BFF'}),
             dcc.Graph(id='graph', style={'height': '80vh'})
-        ])
+        ]),
     ])
 ])
-
-# Callback to update the content dynamically based on the selected option
-@callback(
-    Output('dynamic-content', 'children'),
-    [Input('create_matrix_btn', 'n_clicks'),
-     Input('bfs_btn', 'n_clicks'),
-     Input('dfs_btn', 'n_clicks')]
-)
-def update_content(create_matrix_clicks, bfs_clicks, dfs_clicks):
-    # Determine which button was clicked
-    triggered_id = ctx.triggered_id
-
-    # Handle the case where no button has been clicked yet (initial load)
-    if triggered_id is None or triggered_id == 'create_matrix_btn':
-        return code_editor()  # Default content on load
-
-    if triggered_id == 'bfs_btn':
-        return html.Div('BFS Traversal selected. (Further input fields or information can be added here)')
-    
-    if triggered_id == 'dfs_btn':
-        return html.Div('DFS Traversal selected. (Further input fields or information can be added here)')
-    
-    return html.Div()  # Fallback in case no button was clicked
