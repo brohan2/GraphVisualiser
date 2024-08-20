@@ -3,7 +3,9 @@ from dash import html, dcc, Input, Output, callback
 
 # Define the layout
 layout = html.Div([
-    # Top-Centered Title
+        html.Header([
+        html.Title("Your Custom Title")  # Change this to your desired title
+    ]),
     html.Div([
         html.H1("Graph Visualizer", style={
             'textAlign': 'center',
