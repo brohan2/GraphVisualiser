@@ -3,6 +3,12 @@ import dash
 from components.layout import layout
 from components.callbacks import register_callbacks
 
+# app.py
+
+from dash import dcc, html
+
+
+
 # Initialize Flask app
 app = Flask(__name__)
 

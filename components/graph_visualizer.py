@@ -65,9 +65,8 @@ def create_graph(adj_matrix, traversal=None, queue_stack_state=None):
             size=node_size,
             line=dict(width=3, color='blue'),
         ),    
-                # text=['Queue' for _ in queue_stack_state['queue']],
             textposition='top center',
-                    textfont=dict(size=14, color='black'),
+            textfont=dict(size=14, color='black'),
 
             # showlegend=False
         )
